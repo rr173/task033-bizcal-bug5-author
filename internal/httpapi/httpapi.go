@@ -3,6 +3,8 @@ package httpapi
 
 import (
 	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 
 	"task033-bizcal/internal/calendar"
@@ -154,7 +156,17 @@ func (s *Server) handleResolveTimestamp(w http.ResponseWriter, r *http.Request) 
 func decode(r *http.Request, v any) error {
 	dec := json.NewDecoder(r.Body)
 	defer r.Body.Close()
-	return dec.Decode(v)
+	if err := dec.Decode(v); err != nil {
+		return err
+	}
+	var extra json.RawMessage
+	if err := dec.Decode(&extra); err != io.EOF {
+		if err == nil {
+			return errors.New("request body must contain exactly one JSON value")
+		}
+		return err
+	}
+	return nil
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {
