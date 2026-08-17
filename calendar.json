@@ -1,0 +1,6 @@
+{
+  "timezone": "Asia/Shanghai",
+  "weekend": [6, 0],
+  "fixed_holidays": ["2026-01-01"],
+  "recurring_holidays": ["01-01", "05-01", "10-01"]
+}
